@@ -4,7 +4,9 @@
 #include "Adafruit_SSD1306.h"
 
 #define DATA_PIN 4
-
+#define LED_RED 5
+#define LED_YELLOW 6
+#define LED_GREEN 7
 Adafruit_SSD1306 display(-1);
 
 DHT dht(DATA_PIN, DHT11);
@@ -14,6 +16,13 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   Serial.begin(9600);
   dht.begin();
+
+  pinMode(LED_YELLOW, OUTPUT);
+  pinMode(LED_RED, OUTPUT);
+  pinMode(LED_GREEN, OUTPUT);
+
+
+
 
 }
 
@@ -29,10 +38,25 @@ void loop() {
   float h = dht.readHumidity(); // 湿度の読み取り
   float t = dht.readTemperature(); // 温度の読み取り
 
+
+
   display.print("Temp:");
   display.println(t);
   display.print("Hum:");
   display.println(h);
   display.display();
-  
+
+  if (t <= 25) {
+      digitalWrite(LED_GREEN, HIGH);
+      digitalWrite(LED_YELLOW, LOW);
+      digitalWrite(LED_RED, LOW);
+  } else if (t > 25 && t < 28) {
+      digitalWrite(LED_YELLOW, HIGH);
+      digitalWrite(LED_GREEN, LOW);
+      digitalWrite(LED_RED, LOW); 
+ } else {
+      digitalWrite(LED_RED, HIGH);
+      digitalWrite(LED_YELLOW, LOW);
+      digitalWrite(LED_GREEN, LOW);
+  }
 }
